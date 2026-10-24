@@ -1,0 +1,4 @@
+Pillow>=11.3,<13
+cryptography>=46,<48
+websocket-client>=1.9,<2
+dxcam==0.3.0

@@ -1,0 +1,14 @@
+# Run on the office machine: all tunnel traffic is outbound.
+serverAddr = "REPLACE_WITH_VPS_HOSTNAME"
+serverPort = 7000
+auth.method = "token"
+auth.token = "REPLACE_WITH_A_RANDOM_64_CHARACTER_TOKEN"
+transport.tls.enable = true
+# Install a trusted CA/server certificate on frps and set trustedCaFile for production.
+# See https://gofrp.org/en/docs/features/common/network/network-tls/
+[[proxies]]
+name = "campuslink-relay"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 8787
+remotePort = 18787

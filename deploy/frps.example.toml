@@ -1,0 +1,7 @@
+# Run on a public VPS, behind the Caddy HTTPS edge. Use the same strong token in frpc.
+bindPort = 7000
+proxyBindAddr = "127.0.0.1"
+auth.method = "token"
+auth.token = "REPLACE_WITH_A_RANDOM_64_CHARACTER_TOKEN"
+transport.tls.force = true
+allowPorts = [{ single = 18787 }]

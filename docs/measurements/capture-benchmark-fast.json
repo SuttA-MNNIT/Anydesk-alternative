@@ -1,0 +1,61 @@
+{
+  "scope": "Local capture, resize, JPEG encode and AES-GCM only. Static/current desktop; not a network or displayed-FPS measurement.",
+  "results": [
+    {
+      "requestedAccelerated": false,
+      "backend": "Pillow compatibility capture",
+      "targetFps": 30,
+      "maxWidth": 1600,
+      "jpegQuality": 60,
+      "samples": 30,
+      "meanCaptureMs": 51.03,
+      "meanResizeEncodeEncryptMs": 8.86,
+      "meanTotalMs": 59.88,
+      "localProcessingCeilingFps": 16.7,
+      "meanJpegBytes": 149503,
+      "estimatedPayloadMbpsAtTarget": 35.88
+    },
+    {
+      "requestedAccelerated": false,
+      "backend": "Pillow compatibility capture",
+      "targetFps": 60,
+      "maxWidth": 960,
+      "jpegQuality": 50,
+      "samples": 30,
+      "meanCaptureMs": 48.24,
+      "meanResizeEncodeEncryptMs": 4.02,
+      "meanTotalMs": 52.26,
+      "localProcessingCeilingFps": 19.1,
+      "meanJpegBytes": 60575,
+      "estimatedPayloadMbpsAtTarget": 29.08
+    },
+    {
+      "requestedAccelerated": true,
+      "backend": "DXGI accelerated capture",
+      "targetFps": 30,
+      "maxWidth": 1600,
+      "jpegQuality": 60,
+      "samples": 30,
+      "meanCaptureMs": 13.51,
+      "meanResizeEncodeEncryptMs": 11.19,
+      "meanTotalMs": 24.69,
+      "localProcessingCeilingFps": 40.5,
+      "meanJpegBytes": 149517,
+      "estimatedPayloadMbpsAtTarget": 35.88
+    },
+    {
+      "requestedAccelerated": true,
+      "backend": "DXGI accelerated capture",
+      "targetFps": 60,
+      "maxWidth": 960,
+      "jpegQuality": 50,
+      "samples": 30,
+      "meanCaptureMs": 8.05,
+      "meanResizeEncodeEncryptMs": 2.64,
+      "meanTotalMs": 10.69,
+      "localProcessingCeilingFps": 93.6,
+      "meanJpegBytes": 60612,
+      "estimatedPayloadMbpsAtTarget": 29.09
+    }
+  ]
+}

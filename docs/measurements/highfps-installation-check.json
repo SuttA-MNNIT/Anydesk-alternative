@@ -1,0 +1,19 @@
+{
+  "status": "ok",
+  "frozen": true,
+  "offline": true,
+  "uiRequestedSize": [
+    646,
+    852
+  ],
+  "nativeInputSize": 40,
+  "primaryScreen": [
+    1920,
+    1080
+  ],
+  "captureDimensions": [
+    1920,
+    1080
+  ],
+  "captureBackend": "DXGI accelerated capture"
+}

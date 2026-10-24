@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { createChannel } from '../web/protocol.js';
+const secret = '0123456789abcdef0123456789abcdef', sid = 'abcdef0123456789abcdef0123456789';
+const channel = await createChannel(secret, sid);
+const packet = await channel.seal(1, '{"type":"auth","name":"Cross-runtime test","control":false}');
+const script = `import sys,json,base64; sys.path.insert(0,'host'); from protocol import Channel; c=Channel('${secret}','${sid}'); p=c.open(base64.b64decode(sys.stdin.read())); assert json.loads(p[1])['type']=='auth'; print(base64.b64encode(c.seal(1,b'{"type":"approved","control":false}')).decode())`;
+const result = spawnSync(process.argv[2] || '.venv/Scripts/python.exe', ['-c', script], { input: Buffer.from(packet).toString('base64'), encoding: 'utf8' });
+assert.equal(result.status, 0, result.stderr);
+const response = await channel.open(Buffer.from(result.stdout.trim(), 'base64'));
+assert.deepEqual(JSON.parse(new TextDecoder().decode(response.payload)), { type: 'approved', control: false });
+console.log('PASS: JavaScript → Python → JavaScript AES-GCM, directional keys and PBKDF2 interoperability.');

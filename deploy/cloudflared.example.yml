@@ -1,0 +1,8 @@
+# Named tunnel: replace UUID, credentials path, and hostname after creating your tunnel.
+# The Node relay stays on the office machine at 127.0.0.1:8787.
+tunnel: REPLACE_WITH_TUNNEL_UUID
+credentials-file: C:\Users\YOUR_USER\.cloudflared\REPLACE_WITH_TUNNEL_UUID.json
+ingress:
+  - hostname: desk.example.edu
+    service: http://127.0.0.1:8787
+  - service: http_status:404

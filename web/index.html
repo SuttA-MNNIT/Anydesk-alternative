@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CampusLink · Remote desktop</title>
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="/" aria-label="CampusLink home"><span class="brand-mark">C</span> CampusLink <span class="tag">DESK</span></a><span class="relay-status" id="relay-status"><i></i> Checking relay</span></header>
+  <main id="lobby">
+    <section class="intro"><span class="eyebrow">YOUR NETWORK. YOUR DESKTOPS.</span><h1>A little closer<br>to your office.</h1><p>Connect to a Windows desktop from your browser.<br>Your office relay carries the connection.</p><div class="features"><span>⌁ Encrypted session</span><span>◎ Host approval</span><span>↗ Works across networks</span></div></section>
+    <section class="connect-card">
+      <span class="step">01 / CONNECT</span><h2>Open a remote desktop</h2><p>Enter the details shown in the CampusLink host app.</p>
+      <form id="connect-form">
+        <label for="device">Device ID</label><input id="device" name="device" placeholder="123 456 7890" autocomplete="off" inputmode="numeric" required maxlength="14">
+        <label for="secret">Access key</label><input id="secret" name="secret" type="password" placeholder="32-character key from the host" autocomplete="off" required minlength="32" maxlength="40" spellcheck="false">
+        <label for="name">Your name</label><input id="name" name="name" placeholder="How the host will see you" autocomplete="nickname" required maxlength="60">
+        <label class="check"><input id="request-control" type="checkbox" checked> Request keyboard and mouse control</label>
+        <button id="connect" type="submit">Connect to desktop <span>↗</span></button>
+      </form>
+      <div id="message" class="message" role="status" aria-live="polite">The host approves every session before sharing starts.</div>
+      <button class="quiet hidden" id="cancel" type="button">Cancel connection</button>
+    </section>
+    <section class="how"><div><b>01</b><span>Start the host app<small>On the Windows computer you want to reach.</small></span></div><div><b>02</b><span>Share connection details<small>Send the device ID and access key privately.</small></span></div><div><b>03</b><span>Approve and connect<small>The host chooses view only or remote control.</small></span></div></section>
+    <footer>Attended access · Windows host + browser viewer <span>CampusLink 0.1</span></footer>
+  </main>
+  <section id="desktop" class="hidden" aria-label="Remote desktop">
+    <div class="sessionbar"><div><span class="live-dot"></span><b id="remote-name">Remote desktop</b><span id="mode">View only</span></div><div class="session-actions"><span id="stats">Waiting for screen…</span><button id="fullscreen" type="button">Full screen</button><button id="disconnect" class="danger" type="button">Disconnect</button></div></div>
+    <div class="screen-wrap" id="screen-wrap"><canvas id="screen" tabindex="0" aria-label="Remote screen. Click to focus keyboard control."></canvas><div class="screen-wait" id="screen-wait">Waiting for the first frame…</div></div>
+    <div class="desktop-footer"><span id="hint">Click the screen to focus. Escape releases full screen; browser and system shortcuts may stay local.</span><span id="crypto-status">AES-256-GCM · office relay</span></div>
+  </section>
+</body>
+</html>

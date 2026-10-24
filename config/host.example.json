@@ -1,0 +1,4 @@
+{
+  "serverUrl": "https://YOUR-TUNNEL-HOSTNAME",
+  "enrollmentToken": "COPY_THE_OFFICE_RELAY_ENROLLMENT_TOKEN_HERE"
+}

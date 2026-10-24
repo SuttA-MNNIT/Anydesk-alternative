@@ -1,0 +1,9 @@
+# Windows x64 / Python 3.12 runtime dependencies used for the delivered build.
+cffi==2.1.1
+cryptography==47.0.0
+pillow==12.3.0
+pycparser==3.12
+websocket-client==1.9.2
+comtypes==1.4.17
+dxcam==0.3.0
+numpy==2.5.4
