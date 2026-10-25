@@ -108,3 +108,13 @@ test('channel rejects wrong key, tampering, reflected packets and replay', async
   assert.equal((await viewer.open(packet)).type, 1);
   await assert.rejects(viewer.open(packet), /Replay/);
 });
+
+test('enrolled host can explicitly enable full-size native reverse video after approval', async t => {
+  const f = await fixture(t); const host = await register(f.url); const { viewer } = await pair(f.url, host);
+  host.send(JSON.stringify({ type: 'ready' }));
+  const enabled = next(host); host.send(JSON.stringify({ type: 'allow-reverse' }));
+  assert.equal((await enabled).type, 'reverse-enabled');
+  const largeFrame = Buffer.alloc(64 * 1024, 7);
+  const received = next(host); viewer.send(largeFrame);
+  assert.deepEqual(await received, largeFrame);
+});

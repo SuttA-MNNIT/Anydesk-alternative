@@ -20,3 +20,4 @@ docs/network-inspection.json
 *.key
 *.pfx
 *.p12
+*.campuslink

@@ -1,0 +1,20 @@
+{
+  "status": "ok",
+  "frozen": true,
+  "offline": true,
+  "nativeViewer": true,
+  "uiRequestedSize": [
+    651,
+    805
+  ],
+  "helpers": {
+    "node": {
+      "ok": true,
+      "version": "v24.18.0"
+    },
+    "tunnel": {
+      "ok": true,
+      "version": "cloudflared version 2026.10.3 (built 2026-10-21T03:51 UTC)"
+    }
+  }
+}

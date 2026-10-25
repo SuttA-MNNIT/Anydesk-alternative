@@ -1,5 +1,14 @@
 # Validation — 23 October 2026
 
+## Unified native desktop — 25 October 2026
+
+- Native suite: invitation validation, offline GUI startup/JPEG rendering, approval, view-only/input permissions, control revocation, denied sharing, native direction switches both ways, stale stream ACK rejection, and managed relay cleanup.
+- Existing suites remain applicable. Total current automated checks: 8 Node tests, 17 Python tests and 1 cross-runtime crypto check (26 checks).
+- Real public-tunnel smoke test passed with two native clients on this PC, synthetic encrypted JPEG frames of 404,842 bytes each in both directions, and all owned helper processes stopped afterwards. No real desktop was captured or remote Windows input injected by that smoke test.
+- A new two-PC outside-network acceptance test and end-to-end native FPS measurement remain outstanding.
+- Final portable executable startup passed from a separate folder containing only `CampusLink.exe`, with the installed Python/Node locations removed from the child's PATH. The bundled Node 24.18.0 and cloudflared 2026.10.3 both ran, the app remained offline, and its native UI initialized.
+- Embedded asset inspection confirmed the Node runtime, connector, server, ws package and dependency notices are present and private configuration is absent. A loopback relay launched successfully using the assets extracted from the final executable; its Windows Job Object was created and its owned helper was stopped.
+
 ## High FPS upgrade
 
 - Ten Python tests passed after the upgrade, including the original security/input tests plus bounded multi-frame pipelining, byte-budget backpressure, extra ACK rejection, timeout/teardown wakeup, and DXGI compatibility fallback. Original low-rate stop-and-wait behavior is also checked.

@@ -1,12 +1,16 @@
 # CampusLink
 
-An independently built, self-hosted **attended Windows remote desktop** with a browser viewer and an office-hosted relay. Source code, a Windows executable and launchers are included. This is a working first version, not a feature-for-feature reproduction of AnyDesk.
+**New: one-file native desktop app.** Copy `dist/CampusLink.exe` to both Windows PCs. On one choose **Share this computer**; on the other paste its connection code and choose **Connect**. No CMD windows, URL editing, browser, Python installation or Node installation is required for users. The app starts/stops its own bundled relay and tunnel. See [the desktop guide](docs/DESKTOP.md) for native controls and switching direction. The server remains on the office computer; VPS migration is deferred.
+
+**Download:** [CampusLink.exe for Windows x64](https://github.com/SuttA-MNNIT/Anydesk-alternative/releases/download/v0.3.0/CampusLink.exe). Copy this same file to both PCs; use **Share this computer** on one and **Connect** on the other.
+
+An independently built, self-hosted **attended Windows remote desktop** with native Share/Connect modes, an office-hosted relay and legacy browser compatibility. The current desktop build is one executable; the original separate host and command launchers are preserved. This is not a feature-for-feature reproduction of AnyDesk.
 
 **Downloads:** Windows executables and the complete prepared bundle are distributed through [GitHub Releases](https://github.com/SuttA-MNNIT/Anydesk-alternative/releases). This Git repository contains source and launchers; generated binaries, local enrollment secrets and identifying network inspection data are excluded.
 
 **High FPS upgrade:** `START-HOST-HIGHFPS.cmd` launches the separately built host with DXGI capture, bounded frame pipelining, and 30/60 fps targets. The original executable is preserved. See [docs/HIGH-FPS.md](docs/HIGH-FPS.md) for switching instructions and performance limits. Targets are not measured end-to-end guarantees.
 
-## Start on this office computer
+## Legacy host/browser setup
 
 1. Double-click **START-RELAY.cmd** and leave its terminal open. The relay listens only on `127.0.0.1:8787`.
 2. Double-click **START-HOST.cmd**. The office host reads the enrollment token from the generated private `config/relay.json`.

@@ -85,7 +85,7 @@ export function createRelay(config, logger = console) {
       if (binary) {
         const pair = ws.pair;
         if (!pair) { ws.close(1008, 'No session'); return; }
-        if (ws.role === 'viewer' && data.length > 16_384) { end(pair, 'Control packet too large'); return; }
+        if (ws.role === 'viewer' && !pair.reverseAllowed && data.length > 16_384) { end(pair, 'Control packet too large'); return; }
         const now = Date.now();
         if (!ws.rate || now > ws.rate.until) ws.rate = { count: 0, until: now + 1000 };
         if (++ws.rate.count > 300) { end(pair, 'Message rate exceeded'); return; }
@@ -119,6 +119,10 @@ export function createRelay(config, logger = console) {
       } else if (msg.type === 'ready' && ws.role === 'host' && ws.pair && !ws.pair.approved) {
         ws.pair.approved = true; clearTimeout(ws.pair.timer); metrics.paired++;
         logger.info('Attended session approved.');
+      } else if (msg.type === 'allow-reverse' && ws.role === 'host' && ws.pair?.approved) {
+        // Only the enrolled host can permit full-sized video from the other side.
+        ws.pair.reverseAllowed = true;
+        send(ws, { type: 'reverse-enabled' });
       } else if (msg.type === 'end' && ws.pair) {
         end(ws.pair, 'Disconnected by participant');
       } else { ws.close(1008, 'Unexpected message'); }
@@ -148,9 +152,9 @@ export function createRelay(config, logger = console) {
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
-    const config = JSON.parse(await readFile(path.join(root, 'config/relay.json'), 'utf8'));
+    const config = JSON.parse(await readFile(process.env.CAMPUSLINK_RELAY_CONFIG || path.join(root, 'config/relay.json'), 'utf8'));
     const relay = createRelay(config);
-    relay.server.listen(config.port || 8787, config.listenHost || '127.0.0.1', () => console.log(`CampusLink relay: http://${config.listenHost || '127.0.0.1'}:${config.port || 8787}`));
+    relay.server.listen(config.port ?? 8787, config.listenHost || '127.0.0.1', () => console.log(`CampusLink relay: http://${config.listenHost || '127.0.0.1'}:${relay.server.address().port}`));
     relay.server.on('error', err => { console.error(err.message); process.exitCode = 1; });
     for (const signal of ['SIGINT', 'SIGTERM']) process.once(signal, async () => { await relay.close(); process.exit(0); });
   } catch (error) { console.error(error.message); process.exitCode = 1; }

@@ -31,6 +31,7 @@ class INPUT(ctypes.Structure):
 KEYS = {f"Key{chr(c)}": c for c in range(65, 91)}
 KEYS.update({f"Digit{n}": 48 + n for n in range(10)})
 KEYS.update({f"F{n}": 111 + n for n in range(1, 13)})
+KEYS["Escape"] = 27
 KEYS.update({"Backspace": 8, "Tab": 9, "Enter": 13, "ShiftLeft": 0xA0, "ShiftRight": 0xA1, "ControlLeft": 0xA2, "ControlRight": 0xA3, "AltLeft": 0xA4, "AltRight": 0xA5, "Space": 32, "PageUp": 33, "PageDown": 34, "End": 35, "Home": 36, "ArrowLeft": 37, "ArrowUp": 38, "ArrowRight": 39, "ArrowDown": 40, "Insert": 45, "Delete": 46, "MetaLeft": 0x5B, "MetaRight": 0x5C, "CapsLock": 0x14, "NumLock": 0x90, "ScrollLock": 0x91, "Semicolon": 0xBA, "Equal": 0xBB, "Comma": 0xBC, "Minus": 0xBD, "Period": 0xBE, "Slash": 0xBF, "Backquote": 0xC0, "BracketLeft": 0xDB, "Backslash": 0xDC, "BracketRight": 0xDD, "Quote": 0xDE})
 KEYS.update({f"Numpad{n}": 0x60 + n for n in range(10)})
 KEYS.update({"NumpadMultiply": 0x6A, "NumpadAdd": 0x6B, "NumpadSubtract": 0x6D, "NumpadDecimal": 0x6E, "NumpadDivide": 0x6F, "NumpadEnter": 13})

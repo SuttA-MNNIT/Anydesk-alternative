@@ -1,0 +1,12 @@
+{
+  "status": "ok",
+  "publicHttpsHealth": true,
+  "nativeViewerViaPublicTunnel": true,
+  "encryptedFrameBytes": 404842,
+  "reverseDirectionFrameBytes": 404842,
+  "sameSessionAfterReverse": true,
+  "realDesktopCaptured": false,
+  "remoteInputInjected": false,
+  "scope": "Two native protocol clients on this PC, routed through the real public Cloudflare edge. Not a second-PC or outside-network acceptance test.",
+  "allOwnedHelpersStopped": true
+}
