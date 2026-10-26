@@ -1,3 +1,16 @@
+# P2P preview — 26 October 2026
+
+- `p2p_Remote_Desktop` adds a broker registration endpoint, persistent server-issued client IDs, arbitrary client pairing, direct WebRTC data channels and automatic end-to-end encrypted WSS relay fallback. Separate pairs run simultaneously; each endpoint has one active session.
+- The P2P harness passed locally and through a real temporary public HTTPS/WSS tunnel. Both endpoints ran on this Windows PC. It used real UDP ICE/DTLS/SCTP connections and generated JPEGs large enough to require data-channel fragmentation. No real desktop images or Windows input were used.
+- The direct-only interval asserted **zero additional forwarded payload bytes** at the broker while the stream continued. The public run also passed forced relay, two simultaneous pairs, interruption of an established direct channel followed by continued frames on relay, direction switching and wrong-key rejection before capture/approval. Wrong-key rejection intentionally produces a CNG authentication failure in the private test diagnostics.
+- Local approval precedes capture; view-only input is rejected; explicit grant and later revocation work. Registration tests cover unique IDs, duplicate identity rejection, persistence, pair isolation and malformed/cross-session packet rejection. Late frames from a recently closed pair are dropped without unregistering a client.
+- Final standalone package checks passed with installed Python/Node removed from the child PATH. The client created its native window without external DLLs. The server started its bundled runtime, passed local health, stopped its owned helpers, and contained the exact current broker source. Inspection found no private configuration in the server bundle. The client home window was visually inspected; no connected-session GUI automation was performed.
+- Executable sizes and SHA-256 values: [p2p-packages.json](measurements/p2p-packages.json). The client is **7,560,704 bytes (7.56 MB)**; server **65,384,593 bytes (65.38 MB)**. The client's embedded license notices are included in its size.
+- Final suite: 20 Python checks, 12 Node checks and the JavaScript/Python interoperability check passed (33 total). The additional public-tunnel P2P run and both packaged installation checks passed. `npm audit --omit=dev` reported zero known vulnerabilities for ws at validation time.
+- Tests on two physical PCs behind different NATs, sustained displayed FPS, gigabit throughput, long-duration/load testing, code signing and independent security review remain unverified. Quick Tunnel addresses are temporary. VPS deployment is deferred.
+
+The older sections below describe earlier releases and their validation scopes.
+
 # Validation — 23 October 2026
 
 ## Small client / separate server — 26 October 2026

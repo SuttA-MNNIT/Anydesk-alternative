@@ -4,6 +4,7 @@ import { timingSafeEqual, randomBytes } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { WebSocketServer, WebSocket } from 'ws';
+import { attachPeerBroker } from './p2p.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const staticFiles = new Map([
@@ -58,7 +59,9 @@ export function createRelay(config, logger = console) {
     catch { res.writeHead(500); res.end('Unable to load viewer'); }
   });
   const wss = new WebSocketServer({ noServer: true, maxPayload: 3 * 1024 * 1024, perMessageDeflate: false });
+  const broker = attachPeerBroker(server, config);
   server.on('upgrade', (req, socket, head) => {
+    if (req.url === '/peer') return;
     // Deliberately ignore forwarded IP headers: an arbitrary client must not bypass rate limits.
     const ip = req.socket.remoteAddress || 'unknown';
     const origin = req.headers.origin;
@@ -141,13 +144,14 @@ export function createRelay(config, logger = console) {
   }, 25_000);
   heartbeat.unref();
   async function close() {
+    await broker.close();
     clearInterval(heartbeat);
     for (const pair of [...sessions.values()]) end(pair, 'Relay stopped');
     for (const ws of wss.clients) ws.terminate();
     await new Promise(resolve => wss.close(resolve));
     if (server.listening) await new Promise(resolve => server.close(resolve));
   }
-  return { server, close, metrics, hosts, sessions };
+  return { server, close, metrics, hosts, sessions, broker };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

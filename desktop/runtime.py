@@ -50,14 +50,15 @@ def node_path():
 
 
 class ManagedRuntime:
-    def __init__(self, events):
+    def __init__(self, events, peer_state=None, token=None):
         self.events = events
         self.children = []
         self.stopped = threading.Event()
         self.lock = threading.RLock()
         self.config_dir = None
         self.url = None
-        self.token = secrets.token_hex(32)
+        self.token = token or secrets.token_hex(32)
+        self.peer_state = str(peer_state) if peer_state else None
         self.port = None
         self.job = None
         self._create_job()
@@ -103,7 +104,7 @@ class ManagedRuntime:
             self.events.put(("runtime-status", (self, "Starting the private office relay…")))
             self.config_dir = tempfile.TemporaryDirectory(prefix="CampusLink-")
             config = Path(self.config_dir.name) / "relay.json"
-            config.write_text(json.dumps({"listenHost": "127.0.0.1", "port": 0, "enrollmentToken": self.token}), encoding="utf-8")
+            config.write_text(json.dumps({"listenHost": "127.0.0.1", "port": 0, "enrollmentToken": self.token, "peerState": self.peer_state}), encoding="utf-8")
             env = dict(os.environ, CAMPUSLINK_RELAY_CONFIG=str(config))
             relay = self.spawn([node_path(), ASSETS / "server/index.mjs"], env)
             lines = queue.Queue()
@@ -162,6 +163,20 @@ class ManagedRuntime:
                         self.url = route; break
                 if not self.url:
                     raise RuntimeError("The outside connection timed out. The campus network may be blocking the connector.")
+                # A registered tunnel can precede public DNS/edge propagation.
+                self.events.put(("runtime-status", (self, "Waiting for the outside address to become reachable…")))
+                deadline = time.monotonic() + 45
+                while time.monotonic() < deadline and not self.stopped.is_set():
+                    try:
+                        with opener.open(self.url + "/healthz", timeout=5) as response:
+                            if json.load(response).get("status") == "ok":
+                                break
+                    except (OSError, ValueError):
+                        pass
+                    self.stopped.wait(2)
+                else:
+                    if not self.stopped.is_set():
+                        raise RuntimeError("The tunnel connected, but its public address is not reachable yet. Please restart the server shortly.")
             if self.stopped.is_set():
                 return
             self.events.put(("runtime-ready", self))

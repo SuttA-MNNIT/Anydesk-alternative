@@ -1,0 +1,284 @@
+[
+  {
+    "id": "BouncyCastle.Cryptography",
+    "version": "2.7.0",
+    "sha256": "f091ffccab4d03993e660bace277659a79dee0972f54d7f1f4bd46d680966241",
+    "assemblies": [
+      "lib/net461/BouncyCastle.Cryptography.dll"
+    ],
+    "license": "MIT; https://www.bouncycastle.org/stable/nuget/csharp/website",
+    "authors": "Legion of the Bouncy Castle Inc.",
+    "copyright": "Copyright \u00a9 Legion of the Bouncy Castle Inc. 2000-2026",
+    "source": "https://www.bouncycastle.org/stable/nuget/csharp/website",
+    "licenseFile": "LICENSE.md"
+  },
+  {
+    "id": "Common.Logging",
+    "version": "3.4.1",
+    "sha256": "d7179b9736214022af794bfacfc675ec3a753fa28a751f311b2925eeda6a6d07",
+    "assemblies": [
+      "lib/net40/Common.Logging.dll"
+    ],
+    "license": "License included in upstream source.",
+    "authors": "Aleksandar Seovic, Mark Pollack, Erich Eichinger, Stephen Bohlen",
+    "copyright": "",
+    "source": "http://net-commons.github.io/common-logging/"
+  },
+  {
+    "id": "Common.Logging.Core",
+    "version": "3.4.1",
+    "sha256": "5e167886779fc6311c426e8bb3f3853d908338d16cea3fed33d08a400f03081a",
+    "assemblies": [
+      "lib/net40/Common.Logging.Core.dll"
+    ],
+    "license": "License included in upstream source.",
+    "authors": "Aleksandar Seovic, Mark Pollack, Erich Eichinger, Stephen Bohlen",
+    "copyright": "",
+    "source": "http://net-commons.github.io/common-logging/"
+  },
+  {
+    "id": "Concentus",
+    "version": "2.2.2",
+    "sha256": "f487f890bef65757af1cecf420e357f00488cbfac0b409ba461ccbceef81481f",
+    "assemblies": [
+      "lib/net452/Concentus.dll"
+    ],
+    "licenseFile": "LICENSE",
+    "authors": "Logan Stromberg",
+    "copyright": "\u00a9 Xiph.Org Foundation, Skype Limited, CSIRO, Microsoft Corp.",
+    "source": "https://github.com/lostromb/concentus"
+  },
+  {
+    "id": "DnsClient",
+    "version": "1.8.0",
+    "sha256": "5dcf0138223d33c812339ada5673decc0e3278ed5ea32c573cf9fd8e1e7f45a6",
+    "assemblies": [
+      "lib/net472/DnsClient.dll"
+    ],
+    "license": "Apache-2.0; http://dnsclient.michaco.net/",
+    "authors": "MichaCo",
+    "copyright": "Copyright (c) 2024 Michael Conrad",
+    "source": "http://dnsclient.michaco.net/"
+  },
+  {
+    "id": "IPNetwork2",
+    "version": "2.1.2",
+    "sha256": "13aa66191d64edc113ba087611646d764b27ce591d61fe2ce01496236ca84e3b",
+    "assemblies": [
+      "lib/net46/System.Net.IPNetwork.dll"
+    ],
+    "license": "https://github.com/lduchosal/ipnetwork/blob/master/LICENSE",
+    "authors": "Luc Dvchosal",
+    "copyright": "Copyright 2017",
+    "source": "https://github.com/lduchosal/ipnetwork"
+  },
+  {
+    "id": "Makaretu.Dns",
+    "version": "2.0.1",
+    "sha256": "cde20a0a8bf827aaca7db82caded211035681721d51acad101ffe2cd9a93cad0",
+    "assemblies": [
+      "lib/net472/Makaretu.Dns.dll"
+    ],
+    "license": "License included in upstream source.",
+    "authors": "Richard Schneider",
+    "copyright": "\u00a9 2018-2019 Richard Schneider",
+    "source": "https://github.com/richardschneider/net-dns"
+  },
+  {
+    "id": "Makaretu.Dns.Multicast",
+    "version": "0.27.0",
+    "sha256": "07ff5821436699b8e3c9ea90744daa5a5aff28269a7058192ab86f4b01044794",
+    "assemblies": [
+      "lib/net461/Makaretu.Dns.Multicast.dll"
+    ],
+    "license": "License included in upstream source.",
+    "authors": "Richard Schneider",
+    "copyright": "\u00a9 2018-2019 Richard Schneider",
+    "source": "https://github.com/richardschneider/net-mdns"
+  },
+  {
+    "id": "Microsoft.Bcl.AsyncInterfaces",
+    "version": "10.0.11",
+    "sha256": "ebebb2e99bb404716e8fb6b2e8738905b1c39ba93fb4c010ad2ac94c37f40aeb",
+    "assemblies": [
+      "lib/net462/Microsoft.Bcl.AsyncInterfaces.dll"
+    ],
+    "license": "MIT; https://dot.net/",
+    "authors": "Microsoft",
+    "copyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+    "source": "https://dot.net/",
+    "licenseFile": "THIRD-PARTY-NOTICES.TXT"
+  },
+  {
+    "id": "Microsoft.Bcl.HashCode",
+    "version": "6.0.0",
+    "sha256": "f3b9b2bab0bf8cc717d5fdf6d7aee3ec54e36d9e85bd41347acae161319cbd6b",
+    "assemblies": [
+      "lib/net462/Microsoft.Bcl.HashCode.dll"
+    ],
+    "license": "MIT; https://github.com/dotnet/maintenance-packages",
+    "authors": "Microsoft",
+    "copyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+    "source": "https://github.com/dotnet/maintenance-packages"
+  },
+  {
+    "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+    "version": "10.0.11",
+    "sha256": "e4f65e4205a6568f0afbb1a028454077ac5c9fedd754d5734f8720fc306d8ea6",
+    "assemblies": [
+      "lib/net462/Microsoft.Extensions.DependencyInjection.Abstractions.dll"
+    ],
+    "license": "MIT; https://dot.net/",
+    "authors": "Microsoft",
+    "copyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+    "source": "https://dot.net/",
+    "licenseFile": "THIRD-PARTY-NOTICES.TXT"
+  },
+  {
+    "id": "Microsoft.Extensions.Logging.Abstractions",
+    "version": "10.0.11",
+    "sha256": "1dd507daae7995b03032cc0c7508d7d350eb81ac5e82d6f2328e1561ece1075a",
+    "assemblies": [
+      "lib/net462/Microsoft.Extensions.Logging.Abstractions.dll"
+    ],
+    "license": "MIT; https://dot.net/",
+    "authors": "Microsoft",
+    "copyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+    "source": "https://dot.net/",
+    "licenseFile": "THIRD-PARTY-NOTICES.TXT"
+  },
+  {
+    "id": "SimpleBase",
+    "version": "1.3.1",
+    "sha256": "16d44871f2d85f151fb4486af241e034d91a85d7ba16fda13d519935ecc25b56",
+    "assemblies": [
+      "lib/net45/SimpleBase.dll"
+    ],
+    "license": "http://www.apache.org/licenses/",
+    "authors": "Sedat Kapanoglu",
+    "copyright": "Copyright 2014-2017 Sedat Kapanoglu",
+    "source": "https://github.com/ssg/SimpleBase"
+  },
+  {
+    "id": "SIPSorcery",
+    "version": "10.0.17",
+    "sha256": "db7709573c1cd7ffff4090bb2ed0955646d8240bd31ad915954eac141ec72d93",
+    "assemblies": [
+      "lib/net462/SIPSorcery.dll"
+    ],
+    "licenseFile": "LICENSE.md",
+    "authors": "Aaron Clauson, Christophe Irles, Rafael Soares & Contributors",
+    "copyright": "Copyright \u00a9 2010-2026 Aaron Clauson",
+    "source": "https://github.com/sipsorcery-org/sipsorcery/tree/master/src/SIPSorcery"
+  },
+  {
+    "id": "SIPSorcery.WebSocketSharp",
+    "version": "0.0.1",
+    "sha256": "1b3e7f617bb31f9ab40df02572a8d41b6b8f73b72f836bbc7a7d583b056b3834",
+    "assemblies": [
+      "lib/net452/websocket-sharp.dll"
+    ],
+    "license": "MIT; https://github.com/sipsorcery/websocket-sharp",
+    "authors": "sta.blockhead & Contributors",
+    "copyright": "sta.blockhead",
+    "source": "https://github.com/sipsorcery/websocket-sharp"
+  },
+  {
+    "id": "SIPSorceryMedia.Abstractions",
+    "version": "10.0.17",
+    "sha256": "ed4062cf9f39c0ed2e62612221d2ea196ffe4dc38eff0ffcd43b9d32ce803aed",
+    "assemblies": [
+      "lib/netstandard2.0/SIPSorceryMedia.Abstractions.dll"
+    ],
+    "licenseFile": "LICENSE.md",
+    "authors": "Aaron Clauson",
+    "copyright": "Copyright \u00a9 2020-2026 Aaron Clauson",
+    "source": "https://github.com/sipsorcery-org/sipsorcery/tree/master/src/SIPSorceryMedia.Abstractions"
+  },
+  {
+    "id": "System.Buffers",
+    "version": "4.6.1",
+    "sha256": "b00451e91d016fbec091ad1e361f3a7015e1d91d4047f7e48a74455b2a673d79",
+    "assemblies": [
+      "lib/net462/System.Buffers.dll"
+    ],
+    "license": "MIT; https://github.com/dotnet/maintenance-packages",
+    "authors": "Microsoft",
+    "copyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+    "source": "https://github.com/dotnet/maintenance-packages"
+  },
+  {
+    "id": "System.Diagnostics.DiagnosticSource",
+    "version": "10.0.11",
+    "sha256": "64362516b39540fa9741ab8864a95963b3fff667a9c09c60703a5e11bed69558",
+    "assemblies": [
+      "lib/net462/System.Diagnostics.DiagnosticSource.dll"
+    ],
+    "license": "MIT; https://dot.net/",
+    "authors": "Microsoft",
+    "copyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+    "source": "https://dot.net/",
+    "licenseFile": "THIRD-PARTY-NOTICES.TXT"
+  },
+  {
+    "id": "System.Memory",
+    "version": "4.6.3",
+    "sha256": "26078aeb758c9ae985e8bf851f973026061da6a5eb4837204d0c2d2204c72955",
+    "assemblies": [
+      "lib/net462/System.Memory.dll"
+    ],
+    "license": "MIT; https://github.com/dotnet/maintenance-packages",
+    "authors": "Microsoft",
+    "copyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+    "source": "https://github.com/dotnet/maintenance-packages"
+  },
+  {
+    "id": "System.Numerics.Vectors",
+    "version": "4.6.1",
+    "sha256": "2bc500a86dcb02f2032d6d877f9e2d6e9e4a79080e57239b4198679d4031f2c7",
+    "assemblies": [
+      "lib/net462/System.Numerics.Vectors.dll"
+    ],
+    "license": "MIT; https://github.com/dotnet/maintenance-packages",
+    "authors": "Microsoft",
+    "copyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+    "source": "https://github.com/dotnet/maintenance-packages"
+  },
+  {
+    "id": "System.Runtime.CompilerServices.Unsafe",
+    "version": "6.1.2",
+    "sha256": "5f6a7f53af3465f92beb6da873ebe0e496206c313313b98badee4355a6b25937",
+    "assemblies": [
+      "lib/net462/System.Runtime.CompilerServices.Unsafe.dll"
+    ],
+    "license": "MIT; https://github.com/dotnet/maintenance-packages",
+    "authors": "Microsoft",
+    "copyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+    "source": "https://github.com/dotnet/maintenance-packages"
+  },
+  {
+    "id": "System.Threading.Tasks.Extensions",
+    "version": "4.6.3",
+    "sha256": "1abc92c7517a021ead7e79d0b7f3c70be75bce0fac7cfe3b38e157d32245ff1a",
+    "assemblies": [
+      "lib/net462/System.Threading.Tasks.Extensions.dll"
+    ],
+    "license": "MIT; https://github.com/dotnet/maintenance-packages",
+    "authors": "Microsoft",
+    "copyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+    "source": "https://github.com/dotnet/maintenance-packages"
+  },
+  {
+    "id": "Microsoft.NETFramework.ReferenceAssemblies.net48",
+    "version": "1.0.3",
+    "sha256": "8a7e348538e7eb91351696911689f49e3d4f63f8bab517432bbe159b8b1104a2",
+    "assemblies": [],
+    "references": [
+      "build/.NETFramework/v4.8/Facades/netstandard.dll"
+    ],
+    "license": "Build-only reference assembly; not included in the executable.",
+    "authors": "Microsoft",
+    "copyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+    "source": "https://github.com/Microsoft/dotnet/tree/master/releases/reference-assemblies"
+  }
+]

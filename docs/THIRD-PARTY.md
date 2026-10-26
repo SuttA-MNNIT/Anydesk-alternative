@@ -2,7 +2,11 @@
 
 CampusLink is an independent implementation. It contains no AnyDesk source, branding or proprietary codec.
 
-The small `CampusLinkClient.exe` uses the Windows-provided .NET Framework 4.8+ libraries and Windows CNG, GDI and input APIs. It includes no third-party runtime or library. The components below are bundled in, used to build, or support the full server/legacy host; they are not carried by the small client.
+The older 0.3.1 `CampusLinkClient.exe` uses the Windows-provided .NET Framework 4.8+ libraries and Windows CNG, GDI and input APIs. It includes no third-party runtime or library.
+
+The new `p2p_Remote_Desktop.exe` also uses Windows .NET Framework 4.8+, CNG, GDI and input APIs. It embeds compressed managed WebRTC libraries, rather than a Python/Node/browser runtime: SIPSorcery 10.0.17, BouncyCastle.Cryptography 2.7.0, SIPSorceryMedia.Abstractions and their pinned dependencies. Exact package versions, SHA-256 digests, assembly paths and attribution are in `p2p-client/dependencies.lock.json`. `scripts/prepare-p2p.py` verifies downloads and combines package/upstream license text into `THIRD-PARTY-NOTICES-P2P.txt`, also embedded under **About / licenses**. SIPSorcery and its media abstractions use their upstream BSD-3-Clause license **with an additional use restriction**, reproduced in full; the LGPL section applies to FFmpeg, which this app does not use. Other dependency terms include MIT, Apache-2.0, BSD and the notices packaged with Concentus. This project does not relicense third-party code.
+
+The P2P server bundles Node, ws, Python, Tcl/Tk and cloudflared. It does not bundle desktop capture/input functionality. The components below also cover the older full server/host releases; they are not all carried by the new broker server or P2P client.
 
 Runtime dependencies and upstream licensing:
 

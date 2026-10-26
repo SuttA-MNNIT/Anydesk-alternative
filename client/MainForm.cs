@@ -34,10 +34,13 @@ namespace CampusLink.Client {
         readonly CheckBox allow=new CheckBox { AutoSize=true,Text="Allow remote keyboard and mouse",Padding=new Padding(8,10,0,0) };
         Button connect,reverse,request;
         ClientSession session;
+        readonly IPeerNetwork network;
+        readonly TextBox localCode=new TextBox {Multiline=true,ReadOnly=true,Height=62,Dock=DockStyle.Bottom,Font=new Font("Consolas",9)};
         bool refreshing,fullScreen;
         Rectangle savedBounds; FormBorderStyle savedBorder;
         int frames; long bytes; DateTime since=DateTime.UtcNow,lastMove=DateTime.MinValue;
-        public MainForm() {
+        public MainForm(IPeerNetwork peers=null) {
+            network=peers;
             Text="CampusLink Client — Connect"; Width=1050;Height=760;MinimumSize=new Size(780,640);BackColor=background;ForeColor=Color.FromArgb(237,244,237);Font=new Font("Segoe UI",10);
             status.Padding=new Padding(22,2,22,2);status.ForeColor=green;status.Text="Ready. Paste a connection code from the office server.";
             Controls.Add(home);Controls.Add(desktop);Controls.Add(status);
@@ -53,7 +56,21 @@ namespace CampusLink.Client {
             actions.Controls.Add(MakeButton("Disconnect",delegate { Disconnect(); },true));
             card.Controls.Add(note);card.Controls.Add(actions);card.Controls.Add(code);card.Controls.Add(caption);
             home.Controls.Add(card);home.Controls.Add(intro);home.Controls.Add(title);
+            if(network!=null) {
+                Text="p2p_Remote_Desktop — CampusLink";title.Text="CampusLink P2P";
+                MinimumSize=new Size(850,740);home.AutoScroll=true;
+                intro.Text="Join your server once. Any connected computer can share or connect.";
+                status.Text="Paste the server code and choose Join server, or paste a computer code and Connect.";
+                caption.Text="Server code or remote computer code (CL4)";
+                note.Text="Your computer code appears below after joining. Share it privately. You must approve every incoming session.";
+                card.Height=475;actions.Height=116;card.Controls.Add(localCode);
+                actions.Controls.Add(MakeButton("Join server",async delegate{try{await network.Join(code.Text);code.Clear();}catch(Exception error){status.Text=error.Message;}},true));
+                actions.Controls.Add(MakeButton("Copy my computer code",delegate{if(network.Invitation!=""){Clipboard.SetText(network.Invitation);status.Text="Computer code copied. Send it privately to the person connecting.";}},true));
+                network.Status=message=>Ui(delegate{localCode.Text=network.Invitation;if(session==null)status.Text=message;});
+                network.Incoming=peer=>{ConfigurePeer(peer);Ui(delegate{if(session!=null){peer.Finish("Computer is busy.");return;}session=peer;connect.Enabled=false;status.Text="Incoming request. Waiting for your approval.";});};
+            }
             var toolbar=new FlowLayoutPanel { Dock=DockStyle.Top,Height=78,Padding=new Padding(12,8,12,4),WrapContents=true };
+            if(network!=null)toolbar.Height=104;
             toolbar.Controls.Add(remote);
             reverse=MakeButton("Share my screen instead",Reverse,true);toolbar.Controls.Add(reverse);
             request=MakeButton("Request control",async delegate { if(session!=null) await session.Send(new {type="request-control"}); },true);toolbar.Controls.Add(request);
@@ -73,7 +90,7 @@ namespace CampusLink.Client {
             surface.KeyDown+=async delegate(object sender,KeyEventArgs e) {e.SuppressKeyPress=true;if(e.KeyCode==Keys.F11) {FullScreen();return;} if(e.KeyCode==Keys.Escape && fullScreen) {FullScreen();return;} string key=WindowsInput.CodeFor(e.KeyCode);if(session!=null && key!=null) await session.Input(new {type="key",code=key,down=true});};
             surface.KeyUp+=async delegate(object sender,KeyEventArgs e) {e.SuppressKeyPress=true;string key=WindowsInput.CodeFor(e.KeyCode);if(session!=null && key!=null && e.KeyCode!=Keys.F11) await session.Input(new {type="key",code=key,down=false});};
             surface.LostFocus+=async delegate {if(session!=null) await session.Input(new {type="release"});};
-            FormClosing+=delegate {Disconnect();};
+            FormClosing+=delegate {Disconnect();if(network!=null)network.Dispose();};
         }
         Button MakeButton(string text,Action action,bool secondary=false) {
             var button=new Button { Text=text,AutoSize=true,Height=38,FlatStyle=FlatStyle.Flat,BackColor=secondary?panel:green,ForeColor=secondary?ForeColor:background,Padding=new Padding(9,3,9,3),Margin=new Padding(0,0,8,0) };
@@ -99,6 +116,12 @@ namespace CampusLink.Client {
         }
         async Task Connect() {
             if(session!=null) {status.Text="Disconnect the current session first.";return;}
+            if(network!=null) {
+                connect.Enabled=false;status.Text="Connecting to the remote computer…";
+                try{var nativePeer=await network.Connect(code.Text);session=nativePeer;nativePeer.Profile=quality.Text;ConfigurePeer(nativePeer);code.Clear();status.Text="Waiting for approval on the sharing computer.";await nativePeer.Authenticate();}
+                catch(Exception error){connect.Enabled=true;status.Text=error.Message;}
+                return;
+            }
             Invitation invitation;
             try {invitation=Invitation.Parse(code.Text);}catch(Exception error){status.Text=error.Message;return;}
             var peer=new ClientSession();session=peer;peer.Profile=quality.Text;code.Clear();connect.Enabled=false;status.Text="Connecting… Waiting for approval on the sharing computer.";
@@ -108,6 +131,23 @@ namespace CampusLink.Client {
             peer.ReverseOffer=control=>Ask("The other person offers to share their screen again. Stop sharing your screen and accept?","Switch direction");
             peer.ControlRequest=()=>Ask("Allow the connected person to use your keyboard and mouse for this session?","Allow control");
             await peer.Connect(invitation);
+        }
+        void ConfigurePeer(ClientSession peer) {
+            peer.Frame=ShowFrame;
+            peer.Changed=message=>Ui(delegate{if(session!=peer)return;status.Text=message+" · "+peer.TransportName;RefreshMode();});
+            peer.Ended=message=>Ui(delegate{if(session!=peer)return;Disconnect();status.Text=message;});
+            peer.Approval=name=>AskSharing(name);
+            peer.ReverseOffer=control=>Ask("Stop sharing your screen and view the other computer instead?","Switch direction");
+            peer.ControlRequest=()=>Ask("Allow the connected person to use your keyboard and mouse for this session?","Allow control");
+        }
+        Task<int> AskSharing(string name) {
+            var answer=new TaskCompletionSource<int>();
+            if(IsDisposed||!IsHandleCreated){answer.SetResult(-1);return answer.Task;}
+            BeginInvoke(new Action(delegate{
+                if(session==null){answer.TrySetResult(-1);return;}
+                var result=MessageBox.Show(this,name+" requests access to your primary screen.\n\nYes: share and allow keyboard/mouse control.\nNo: share in view-only mode.\nCancel: decline this connection.","CampusLink — Incoming connection",MessageBoxButtons.YesNoCancel,MessageBoxIcon.Question,MessageBoxDefaultButton.Button3);
+                answer.TrySetResult(result==DialogResult.Cancel?-1:result==DialogResult.Yes?1:0);
+            }));return answer.Task;
         }
         Task<bool> Ask(string message,string title) {
             var answer=new TaskCompletionSource<bool>();
@@ -124,7 +164,7 @@ namespace CampusLink.Client {
             if(session==null)return;
             home.Visible=false;desktop.Visible=true;
             surface.Visible=session.Mode=="viewing";
-            remote.Text=session.Mode=="sharing"?"Sharing your screen":session.RemoteName+(session.Control?" · Control":" · View only");
+            remote.Text=(session.Mode=="sharing"?"Sharing your screen":session.RemoteName+(session.Control?" · Control":" · View only"))+(network==null?"":" · "+session.TransportName);
             reverse.Enabled=session.Native && session.Mode=="viewing";request.Enabled=session.Native && session.Mode=="viewing" && !session.Control;
             refreshing=true;allow.Enabled=session.Mode=="sharing";allow.Checked=session.Mode=="sharing" && session.Control;refreshing=false;
             if(session.Mode=="viewing")surface.Focus();
@@ -133,6 +173,6 @@ namespace CampusLink.Client {
         async Task Mouse(MouseEventArgs e,bool down) {if(session==null)return;int button=e.Button==MouseButtons.Left?0:e.Button==MouseButtons.Middle?1:2;var r=surface.PictureBounds;if(r.Width<1||r.Height<1)return;await session.Input(new {type="button",button=button,down=down,x=Math.Max(0,Math.Min(1,(double)(e.X-r.X)/r.Width)),y=Math.Max(0,Math.Min(1,(double)(e.Y-r.Y)/r.Height))});}
         async void OpenInvitation() {using(var dialog=new OpenFileDialog {Filter="CampusLink invitation|*.campuslink|Text file|*.txt"}) if(dialog.ShowDialog(this)==DialogResult.OK) {try {if(new FileInfo(dialog.FileName).Length>4096)throw new InvalidDataException("Invitation file is too large.");code.Text=File.ReadAllText(dialog.FileName);await Connect();}catch(Exception error){status.Text=error.Message;}}}
         void FullScreen() {if(!fullScreen){savedBounds=Bounds;savedBorder=FormBorderStyle;FormBorderStyle=FormBorderStyle.None;WindowState=FormWindowState.Normal;Bounds=Screen.FromControl(this).Bounds;}else{FormBorderStyle=savedBorder;Bounds=savedBounds;}fullScreen=!fullScreen;}
-        public void Disconnect() {var peer=session;session=null;if(peer!=null)peer.Dispose();home.Visible=true;desktop.Visible=false;connect.Enabled=true;surface.SetFrame(null);status.Text="Disconnected. No server or tunnel runs in this client.";if(fullScreen)FullScreen();}
+        public void Disconnect() {var peer=session;session=null;if(peer!=null)peer.Dispose();home.Visible=true;desktop.Visible=false;connect.Enabled=true;surface.SetFrame(null);status.Text=network==null?"Disconnected. No server or tunnel runs in this client.":"Session disconnected. Your screen is no longer shared.";if(fullScreen)FullScreen();}
     }
 }

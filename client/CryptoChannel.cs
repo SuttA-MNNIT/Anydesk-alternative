@@ -12,14 +12,14 @@ namespace CampusLink.Client {
         ulong sequence;
         ulong received;
         bool hasReceived;
-        public CryptoChannel(string secret, string sessionId) {
+        public CryptoChannel(string secret, string sessionId, bool host=false) {
             byte[] material;
             using (var derive = new Rfc2898DeriveBytes(secret.ToLowerInvariant(), Encoding.UTF8.GetBytes("CampusLink/1/" + sessionId), 150000, HashAlgorithmName.SHA256)) material = derive.GetBytes(64);
-            sender = new CngGcm(material.Take(32).ToArray());
-            receiver = new CngGcm(material.Skip(32).ToArray());
+            sender = new CngGcm((host?material.Skip(32):material.Take(32)).ToArray());
+            receiver = new CngGcm((host?material.Take(32):material.Skip(32)).ToArray());
             Array.Clear(material, 0, material.Length);
-            sendSuffix = Encoding.UTF8.GetBytes(sessionId + "viewer");
-            receiveSuffix = Encoding.UTF8.GetBytes(sessionId + "host");
+            sendSuffix = Encoding.UTF8.GetBytes(sessionId + (host?"host":"viewer"));
+            receiveSuffix = Encoding.UTF8.GetBytes(sessionId + (host?"viewer":"host"));
         }
         public byte[] Seal(byte kind, byte[] payload) {
             var header = new byte[9]; header[0] = 1;

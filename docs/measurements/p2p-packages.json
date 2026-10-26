@@ -1,0 +1,35 @@
+{
+  "status": "ok",
+  "standaloneFolder": true,
+  "installedPythonNodeRemovedFromPath": true,
+  "embeddedBrokerMatchesSource": true,
+  "privateConfigurationExcluded": true,
+  "packages": [
+    {
+      "name": "p2p_Remote_Desktop.exe",
+      "bytes": 7560704,
+      "sha256": "f245785bb25b175f190036ae4f72fcecfd24d02aa98eec29a34d2a98bbc832b6",
+      "installation": {
+        "status": "ok",
+        "version": "0.4.0",
+        "nativeHandleCreated": true,
+        "bytes": 7560704,
+        "externalLibrariesRequired": false,
+        "bundledServer": false,
+        "inputSize": 40
+      }
+    },
+    {
+      "name": "CampusLinkP2PServer.exe",
+      "bytes": 65384593,
+      "sha256": "0fe513bc711ed120d1e75d23dc7fb5995b7281439dbd3a287fbddb44cad811a9",
+      "installation": {
+        "status": "ok",
+        "version": "0.4.0",
+        "bundledRuntimeStarted": true,
+        "ownedHelpersStopped": true,
+        "screenCaptureIncluded": false
+      }
+    }
+  ]
+}

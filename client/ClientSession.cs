@@ -19,6 +19,8 @@ namespace CampusLink.Client {
         readonly Queue<Tuple<DateTime,int>> pending=new Queue<Tuple<DateTime,int>>();
         int pendingBytes;
         CryptoChannel channel;
+        IPacketTransport transport;
+        bool hosting,approvalWaiting;
         string sessionId,reverseOut,reverseIn;
         bool reverseControl,finished;
         int generation;
@@ -31,6 +33,8 @@ namespace CampusLink.Client {
         public Func<byte[],string,Task> Frame;
         public Func<bool,Task<bool>> ReverseOffer;
         public Func<Task<bool>> ControlRequest;
+        public Func<string,Task<int>> Approval;
+        public string TransportName { get { return transport==null?"Encrypted relay":transport.Name; } }
         public Action<string> Changed;
         public Action<string> Ended;
         public Func<int,long,byte[]> CaptureFrame;
@@ -50,6 +54,14 @@ namespace CampusLink.Client {
             } catch(OperationCanceledException) { Finish("Disconnected."); }
             catch(Exception) { Finish("Connection or authentication failed. Check the connection code and that the server is still sharing."); }
         }
+        public void Attach(IPacketTransport wire,string key,string id,bool host) {
+            hosting=host; sessionId=id; transport=wire;
+            lock(cryptoGate) channel=new CryptoChannel(key,id,host);
+            wire.Packet=ReceivePacket;
+            wire.Ended=Finish;
+            wire.Changed=message=>Change(message);
+        }
+        public Task Authenticate() { return Send(new {type="auth",name=Environment.MachineName,control=true,features=new[]{"native-switch-v1"}}); }
         async Task SendPlain(object value) { await SendBytes(Encoding.UTF8.GetBytes(Json.Encode(value)),WebSocketMessageType.Text); }
         async Task SendBytes(byte[] value,WebSocketMessageType type) {
             if(!IsActive) return;
@@ -67,7 +79,8 @@ namespace CampusLink.Client {
                     try {
                         byte[] packet;
                         lock(cryptoGate) { if(channel==null || !IsActive) return; packet=channel.Seal(1,Encoding.UTF8.GetBytes(Json.Encode(value))); }
-                        if(socket.State==WebSocketState.Open) await socket.SendAsync(new ArraySegment<byte>(packet),WebSocketMessageType.Binary,true,timeout.Token);
+                        if(transport!=null) await transport.Send(packet);
+                        else if(socket.State==WebSocketState.Open) await socket.SendAsync(new ArraySegment<byte>(packet),WebSocketMessageType.Binary,true,timeout.Token);
                     } finally { sendGate.Release(); }
                 }
             } catch { Finish("The connection closed."); }
@@ -81,7 +94,8 @@ namespace CampusLink.Client {
                         if(!IsActive || Mode!="sharing" || streamGeneration!=generation) return;
                         lock(cryptoGate) packet=channel.Seal(2,jpeg);
                     }
-                    await socket.SendAsync(new ArraySegment<byte>(packet),WebSocketMessageType.Binary,true,timeout.Token);
+                    if(transport!=null) await transport.Send(packet);
+                    else await socket.SendAsync(new ArraySegment<byte>(packet),WebSocketMessageType.Binary,true,timeout.Token);
                 } finally { sendGate.Release(); }
             }
         }
@@ -106,20 +120,30 @@ namespace CampusLink.Client {
                             await Send(new {type="auth",name=Environment.MachineName,control=true,features=new[]{"native-switch-v1"}});
                         } else if(type=="error" || type=="session-ended") { Finish(Json.Text(message,"message",Json.Text(message,"reason","Session ended."))); return; }
                     } else {
-                        byte[] plain; lock(cryptoGate) { if(channel==null) throw new InvalidDataException(); plain=channel.Open(data); }
-                        if(plain[0]==2) {
-                            string id=StreamId;
-                            if(Mode=="viewing" && Frame!=null) { await Frame(plain.Skip(1).ToArray(),id); if(Mode=="viewing" && id==StreamId) await Send(new {type="ack",streamId=id}); }
-                        } else if(plain[0]==1 && plain.Length<=8193) await Command(Json.Decode(Encoding.UTF8.GetString(plain,1,plain.Length-1)));
-                        else throw new InvalidDataException("Invalid session command.");
+                        await ReceivePacket(data);
                     }
                 }
             }
         }
+        async Task ReceivePacket(byte[] data) {
+            if(!IsActive) return;
+            byte[] plain; lock(cryptoGate) { if(channel==null) throw new InvalidDataException(); plain=channel.Open(data); }
+            if(plain[0]==2) {
+                string id=StreamId;
+                if(Mode=="viewing" && Frame!=null) { await Frame(plain.Skip(1).ToArray(),id); if(Mode=="viewing" && id==StreamId) await Send(new {type="ack",streamId=id}); }
+            } else if(plain[0]==1 && plain.Length<=8193) await Command(Json.Decode(Encoding.UTF8.GetString(plain,1,plain.Length-1)));
+            else throw new InvalidDataException("Invalid session command.");
+        }
         async Task Command(Dictionary<string,object> message) {
             string type=Json.Text(message,"type");
+            if(type=="auth" && hosting && Mode=="pending" && !approvalWaiting) {
+                approvalWaiting=true;
+                RemoteName=new string(Json.Text(message,"name","Remote computer").Where(c=>!char.IsControl(c)).Take(80).ToArray());if(RemoteName=="")RemoteName="Remote computer"; Native=Json.Feature(message,"native-switch-v1");
+                HandleApproval(); return;
+            }
             if(type=="approved" && Mode=="pending") {
                 Mode="viewing"; Control=Json.Flag(message,"control"); Native=Json.Feature(message,"native-switch-v1"); RemoteName=Json.Text(message,"name","Remote computer");
+                if(transport!=null) Background(()=>transport.Ready(true));
                 if(Native) await Send(new {type="quality",profile=Profile}); Change("Viewing "+RemoteName); return;
             }
             if(type=="denied" || type=="error") { Finish("The other computer declined the connection."); return; }
@@ -149,6 +173,18 @@ namespace CampusLink.Client {
                 bool granted=Json.Flag(message,"control");
                 HandleReverseOffer(request,granted);
             }
+        }
+        async void HandleApproval() {
+            try {
+                int choice=Approval==null?-1:await Approval(RemoteName);
+                if(!IsActive || Mode!="pending") return;
+                if(choice<0) { await Send(new {type="denied"}); Finish("Connection declined locally."); return; }
+                Mode="starting";
+                Task connection=transport==null?Task.FromResult(false):transport.Ready(false);
+                await Send(new {type="approved",name=Environment.MachineName,control=choice==1,features=new[]{"native-switch-v1"}});
+                await connection;
+                if(IsActive) await StartSharing(choice==1);
+            } catch { Finish("The sharing request could not be completed."); }
         }
         async void HandleControlRequest() {
             try { if(await ControlRequest() && IsActive && Mode=="sharing") await SetControl(true); }
@@ -208,7 +244,7 @@ namespace CampusLink.Client {
         }
         public void Finish(string message) {
             lock(stateGate) { if(finished) return; finished=true; Mode="ended"; generation++; Control=false; input.Release(); pending.Clear(); pendingBytes=0; }
-            stop.Cancel(); socket.Abort(); var callback=Ended; if(callback!=null) callback(message);
+            stop.Cancel(); socket.Abort(); if(transport!=null)transport.Dispose(); var callback=Ended; if(callback!=null) callback(message);
         }
         public void Dispose() { Finish("Disconnected."); lock(cryptoGate) { if(channel!=null) {channel.Dispose();channel=null;} } socket.Dispose(); }
     }

@@ -1,5 +1,7 @@
 # CampusLink Desktop 0.3.1 — server and small client
 
+This guide covers the preserved relay release. For `p2p_Remote_Desktop` 0.4.0, use [the P2P guide](P2P.md) and its separate executables.
+
 Use **`dist/CampusLinkServer.exe`** on the office Windows x64 PC and **`dist/CampusLinkClient.exe`** on the outside Windows x64 PC. Each role needs one executable. The server retains the tested v0.3.0 code and bundled relay/tunnel. The client is a separate C# Windows Forms application using Windows .NET Framework 4.8+ and system cryptography; it bundles no Python, Node, tunnel connector or third-party libraries. Windows 11 includes .NET Framework 4.8 or newer; some older Windows PCs may need Microsoft's framework update. No runtime is silently downloaded by the client.
 
 | Edition | File size | Role |
