@@ -8,4 +8,5 @@ if (-not (Test-Path -LiteralPath 'tools\cloudflared.exe')) { throw 'The official
 if ($LASTEXITCODE -ne 0) { throw 'Could not collect dependency notices.' }
 & $campusPython -m PyInstaller --noconfirm --onefile --windowed --name CampusLink --collect-submodules dxcam --hidden-import comtypes.client --add-binary ($campusNode + ';runtime') --add-binary 'tools\cloudflared.exe;tools' --add-data 'server;server' --add-data 'web;web' --add-data 'node_modules\ws;node_modules\ws' --add-data 'build\desktop-notices;licenses' run_desktop.py
 if ($LASTEXITCODE -ne 0) { throw 'Unified desktop build failed.' }
-Write-Host 'Built dist\CampusLink.exe. Copy this one file to both Windows PCs.'
+Copy-Item -LiteralPath 'dist\CampusLink.exe' -Destination 'dist\CampusLinkServer.exe' -Force
+Write-Host 'Built dist\CampusLinkServer.exe for the office PC. Build the separate small client with scripts/build-client.ps1.'

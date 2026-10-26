@@ -1,5 +1,15 @@
 # Validation — 23 October 2026
 
+## Small client / separate server — 26 October 2026
+
+- `CampusLinkClient.exe` is 83,968 bytes (82 KiB); its build enforces a strict 10 MB limit. It uses installed Windows .NET Framework 4.8+ and native CNG crypto, with no bundled server, Python, Node, tunnel connector or third-party client libraries.
+- Windows CNG/Python interoperability passed in both directions. Wrong key, tampering, reflected packets and replay were rejected. The native Windows `INPUT` structure is 40 bytes.
+- Small-client integration passed against the existing server: encrypted JPEGs, initial view-only approval, request/grant/revoke control, recorded key input, role reversal in both directions, and rejection of encrypted input while reverse sharing is view only. The same tests also passed through a real public Cloudflare tunnel on this PC. All imagery and input were synthetic/recorded.
+- Portable startup passed from a folder containing only the small executable with Python/Node removed from PATH. .NET Framework was already installed; this is not a claim of a runtime-free executable.
+- Current combined checks: 19 Python, 8 Node and 1 cross-runtime test (28 total).
+- The main client window was visually inspected. The follow-up screen-rendering UI test was stopped with the physical Escape key; protocol/JPEG decoding tests passed. A new two-physical-PC acceptance test and actual native FPS measurement remain outstanding.
+- `CampusLinkServer.exe` is an unchanged copy of the validated full v0.3.0 executable, renamed to distinguish roles. Its server startup, relay/tunnel management, notices and prior validation are retained.
+
 ## Unified native desktop — 25 October 2026
 
 - Native suite: invitation validation, offline GUI startup/JPEG rendering, approval, view-only/input permissions, control revocation, denied sharing, native direction switches both ways, stale stream ACK rejection, and managed relay cleanup.

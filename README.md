@@ -1,10 +1,10 @@
 # CampusLink
 
-**New: one-file native desktop app.** Copy `dist/CampusLink.exe` to both Windows PCs. On one choose **Share this computer**; on the other paste its connection code and choose **Connect**. No CMD windows, URL editing, browser, Python installation or Node installation is required for users. The app starts/stops its own bundled relay and tunnel. See [the desktop guide](docs/DESKTOP.md) for native controls and switching direction. The server remains on the office computer; VPS migration is deferred.
+**Current Windows setup: separate server and small client.** Run `CampusLinkServer.exe` on the office PC and `CampusLinkClient.exe` on the outside PC. Each is one file. The server manages its relay/tunnel; the small client carries none of those components. Use **Share this computer** on the server, then paste its connection code and choose **Connect** on the client. No CMD startup, URL editing, browser, Python or Node installation is needed for users. The small client requires Windows .NET Framework 4.8 or later, included with Windows 11. See [the desktop guide](docs/DESKTOP.md). VPS migration remains deferred.
 
-**Download:** [CampusLink.exe for Windows x64](https://github.com/SuttA-MNNIT/Anydesk-alternative/releases/download/v0.3.0/CampusLink.exe). Copy this same file to both PCs; use **Share this computer** on one and **Connect** on the other.
+**Downloads:** [CampusLinkServer.exe](https://github.com/SuttA-MNNIT/Anydesk-alternative/releases/download/v0.3.1/CampusLinkServer.exe) for the office PC and [CampusLinkClient.exe](https://github.com/SuttA-MNNIT/Anydesk-alternative/releases/download/v0.3.1/CampusLinkClient.exe) for the connecting PC. Client size: **83,968 bytes (82 KiB)**. The original combined v0.3.0 executable remains available as a fallback.
 
-An independently built, self-hosted **attended Windows remote desktop** with native Share/Connect modes, an office-hosted relay and legacy browser compatibility. The current desktop build is one executable; the original separate host and command launchers are preserved. This is not a feature-for-feature reproduction of AnyDesk.
+An independently built, self-hosted **attended Windows remote desktop** with a native client, an office-hosted relay and legacy browser compatibility. Original host executables and command launchers are preserved. This is not a feature-for-feature reproduction of AnyDesk.
 
 **Downloads:** Windows executables and the complete prepared bundle are distributed through [GitHub Releases](https://github.com/SuttA-MNNIT/Anydesk-alternative/releases). This Git repository contains source and launchers; generated binaries, local enrollment secrets and identifying network inspection data are excluded.
 

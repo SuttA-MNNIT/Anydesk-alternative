@@ -2,6 +2,8 @@
 
 CampusLink is an independent implementation. It contains no AnyDesk source, branding or proprietary codec.
 
+The small `CampusLinkClient.exe` uses the Windows-provided .NET Framework 4.8+ libraries and Windows CNG, GDI and input APIs. It includes no third-party runtime or library. The components below are bundled in, used to build, or support the full server/legacy host; they are not carried by the small client.
+
 Runtime dependencies and upstream licensing:
 
 | Component | Use | Upstream |
